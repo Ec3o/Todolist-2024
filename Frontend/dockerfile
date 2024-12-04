@@ -1,0 +1,26 @@
+# Step 1: 使用官方的 Node.js 镜像作为构建环境
+FROM node:16 AS build
+
+# Step 2: 设置工作目录
+WORKDIR /app
+
+# Step 3: 复制 package.json 和 package-lock.json 并安装依赖
+COPY package*.json ./
+RUN npm config set registry https://registry.npmmirror.com
+RUN npm install
+
+# Step 4: 复制整个应用并构建
+COPY . .
+RUN npm run build
+
+# Step 5: 使用 Nginx 作为生产环境的 Web 服务器
+FROM nginx:alpine
+
+# Step 6: 复制 React 应用的构建文件到 Nginx 的 web 目录
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Step 7: 暴露端口
+EXPOSE 80
+
+# Step 8: 启动 Nginx 服务
+CMD ["nginx", "-g", "daemon off;"]

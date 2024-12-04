@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  web:
+  backend:
     build: Backend
     ports:
       - "3000:3000"
@@ -9,7 +9,14 @@ services:
       - todo_net
     depends_on:
       - db
-
+  frontend:
+    build: Frontend
+    ports:
+      - "81:80"
+    networks:
+      - todo_net
+    depends_on:
+      - db
   db:
     image: mysql:8.0
     environment:

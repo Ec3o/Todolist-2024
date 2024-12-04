@@ -1,132 +1,153 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Container, Row, Col, Button, Table, Form, Modal } from "react-bootstrap";
+import './App.css';
 
-function App() {
+const App = () => {
   const [todos, setTodos] = useState([]);
-  const [newTodo, setNewTodo] = useState({ description: '', status: '', aborted: false });
-  const [editTodo, setEditTodo] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [currentTodo, setCurrentTodo] = useState(null);
+  const [newTodo, setNewTodo] = useState({ description: "", status: "pending", aborted: false });
+
+  // 状态选项
+  const statusOptions = ["pending", "in-progress", "completed"];
 
   // 获取 Todo 列表
-  const fetchTodos = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get('http://localhost:3000/api/todos');
-      setTodos(res.data);
-      setLoading(false);
-    } catch (error) {
-      console.error("There was an error fetching the todos!", error);
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchTodos();
-  }, []);
+    axios.get("http://127.0.0.1:3000/api/todos")
+      .then(response => setTodos(response.data))
+      .catch(error => console.error("Error fetching todos", error));
+  }, [todos]);
 
   // 新增 Todo
-  const handleAddTodo = async () => {
-    try {
-      await axios.post('http://localhost:3000/api/todos', newTodo);
-      setNewTodo({ description: '', status: '', aborted: false });
-      fetchTodos();
-    } catch (error) {
-      console.error("There was an error adding the todo!", error);
+  const handleAddTodo = () => {
+    axios.post("http://127.0.0.1:3000/api/todos", newTodo)
+      .then(response => {
+        setTodos([...todos, { ...newTodo, id: response.data.id }]);
+        setNewTodo({ description: "", status: "pending", aborted: false });
+        setShowModal(false);
+      })
+      .catch(error => console.error("Error adding todo", error));
+  };
+
+  // 更新 Todo
+  const handleUpdateTodo = () => {
+    if (currentTodo) {
+      axios.put(`http://127.0.0.1:3000/api/todos/${currentTodo.id}`, currentTodo)
+        .then(() => {
+          setTodos(todos.map(todo => (todo.id === currentTodo.id ? currentTodo : todo)));
+          setCurrentTodo(null);
+        })
+        .catch(error => console.error("Error updating todo", error));
     }
   };
 
   // 删除 Todo
-  const handleDeleteTodo = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3000/api/todos/${id}`);
-      fetchTodos();
-    } catch (error) {
-      console.error("There was an error deleting the todo!", error);
-    }
+  const handleDeleteTodo = (id) => {
+    axios.delete(`http://127.0.0.1:3000/api/todos/${id}`)
+      .then(() => setTodos(todos.filter(todo => todo.id !== id)))
+      .catch(error => console.error("Error deleting todo", error));
   };
 
-  // 更新 Todo
-  const handleUpdateTodo = async () => {
-    try {
-      await axios.put(`http://localhost:3000/api/todos/${editTodo.id}`, editTodo);
-      setEditTodo(null);
-      fetchTodos();
-    } catch (error) {
-      console.error("There was an error updating the todo!", error);
-    }
+  // 选择 Todo 进行编辑
+  const handleSelectTodo = (todo) => {
+    setCurrentTodo(todo);
+    setShowModal(true);
   };
 
   return (
-    <div className="App">
-      <h1>Todo List</h1>
-      
-      {/* 显示 todo 列表 */}
-      {loading ? <p>Loading...</p> : (
-        <ul>
-          {todos.map(todo => (
-            <li key={todo.id}>
-              <span>{todo.description} - {todo.status}</span>
-              <button onClick={() => setEditTodo(todo)}>Edit</button>
-              <button onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
-      )}
-      
-      {/* 新增 Todo */}
-      <div>
-        <h2>Add New Todo</h2>
-        <input 
-          type="text" 
-          placeholder="Description" 
-          value={newTodo.description}
-          onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
-        />
-        <input 
-          type="text" 
-          placeholder="Status" 
-          value={newTodo.status}
-          onChange={(e) => setNewTodo({ ...newTodo, status: e.target.value })}
-        />
-        <label>
-          Aborted:
-          <input 
-            type="checkbox" 
-            checked={newTodo.aborted}
-            onChange={(e) => setNewTodo({ ...newTodo, aborted: e.target.checked })}
-          />
-        </label>
-        <button onClick={handleAddTodo}>Add Todo</button>
-      </div>
+    <Container>
+      <Row className="mt-4">
+        <Col>
+          <h2>Todo List</h2>
+          <Button onClick={() => setShowModal(true)} variant="primary" className="mb-3">
+            Add New Todo
+          </Button>
 
-      {/* 编辑 Todo */}
-      {editTodo && (
-        <div>
-          <h2>Edit Todo</h2>
-          <input 
-            type="text" 
-            value={editTodo.description}
-            onChange={(e) => setEditTodo({ ...editTodo, description: e.target.value })}
-          />
-          <input 
-            type="text" 
-            value={editTodo.status}
-            onChange={(e) => setEditTodo({ ...editTodo, status: e.target.value })}
-          />
-          <label>
-            Aborted:
-            <input 
-              type="checkbox" 
-              checked={editTodo.aborted}
-              onChange={(e) => setEditTodo({ ...editTodo, aborted: e.target.checked })}
-            />
-          </label>
-          <button onClick={handleUpdateTodo}>Update Todo</button>
-          <button onClick={() => setEditTodo(null)}>Cancel</button>
-        </div>
-      )}
-    </div>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Aborted</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {todos.map(todo => (
+                <tr key={todo.id}>
+                  <td>{todo.description}</td>
+                  <td>{todo.status}</td>
+                  <td>{todo.aborted ? "Yes" : "No"}</td>
+                  <td>
+                    <Button onClick={() => handleSelectTodo(todo)} variant="warning" size="sm" className="mr-2">Edit</Button>
+                    <Button onClick={() => handleDeleteTodo(todo.id)} variant="danger" size="sm">Delete</Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
+
+      {/* Modal for Add/Edit Todo */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} className="modal-bottom">
+        <Modal.Header>
+          <Modal.Title>{currentTodo ? "Edit Todo" : "Add New Todo"}</Modal.Title>
+              <Button
+              variant="link"
+              onClick={() => setShowModal(false)}
+              className="btn-close"
+            >
+              X
+            </Button>
+          
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="formDescription">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter description"
+                value={currentTodo ? currentTodo.description : newTodo.description}
+                onChange={(e) => currentTodo ? setCurrentTodo({ ...currentTodo, description: e.target.value }) : setNewTodo({ ...newTodo, description: e.target.value })}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formStatus">
+              <Form.Label>Status</Form.Label>
+              <Form.Control
+                as="select"
+                value={currentTodo ? currentTodo.status : newTodo.status}
+                onChange={(e) => currentTodo ? setCurrentTodo({ ...currentTodo, status: e.target.value }) : setNewTodo({ ...newTodo, status: e.target.value })}
+              >
+                {statusOptions.map(status => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId="formAborted">
+              <Form.Check
+                type="checkbox"
+                label="Aborted"
+                checked={currentTodo ? currentTodo.aborted : newTodo.aborted}
+                onChange={(e) => currentTodo ? setCurrentTodo({ ...currentTodo, aborted: e.target.checked }) : setNewTodo({ ...newTodo, aborted: e.target.checked })}
+              />
+            </Form.Group>
+
+            <div className="button-container">
+              <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button variant="primary" onClick={currentTodo ? handleUpdateTodo : handleAddTodo}>
+                {currentTodo ? "Update Todo" : "Add Todo"}
+              </Button>
+            </div>
+          </Form>
+        </Modal.Body>
+      </Modal>
+    </Container>
   );
-}
+};
 
 export default App;

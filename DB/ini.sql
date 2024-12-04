@@ -25,3 +25,12 @@ CREATE TABLE IF NOT EXISTS todos (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- Insert initial data into the 'todos' table
+INSERT INTO todos (description, status, aborted)
+VALUES 
+  ('Finish writing the report', 'pending', FALSE),
+  ('Buy groceries', 'completed', FALSE),
+  ('Complete the project presentation', 'in-progress', FALSE),
+  ('Take the dog for a walk', 'pending', FALSE),
+  ('Schedule the team meeting', 'pending', TRUE);

@@ -1,39 +1,235 @@
-.App {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    max-width: 600px;
-    margin: 0 auto;
+/* 全局样式 */
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(45deg, #e3f2fd, #bbdefb); /* 渐变背景色 */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: #333;
+}
+
+h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* 文字阴影 */
+}
+
+/* 页面容器 */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 表格容器 */
+.table-container {
+  background-color: #007bff; /* 蓝色背景 */
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 30px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+  width: 100%;
+  margin-top: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.table th, .table td {
+  padding: 15px 20px;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.table thead {
+  background-color: #007bff;
+  color: white;
+}
+
+.table tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+.table tbody tr:hover {
+  background-color: #e7f1ff;
+  cursor: pointer;
+}
+
+/* 按钮样式 */
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); /* 提升按钮 */
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+  transform: translateY(1px); /* 点击效果 */
+}
+
+button:focus {
+  outline: none;
+}
+.button {
+  outline: none;
+}
+.btn-close{
+  color: white;
+  background-color: rgb(255, 9, 9)!important;
+}
+/* Modal 样式 */
+.modal-content {
+  border-radius: 15px 15px 0 0;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%; /* 占据半个屏幕的高度 */
+  background-color: #fff;
+  animation: slideUp 0.5s ease-in-out;
+}
+
+/* Modal 动画：从底部滑入 */
+@keyframes slideUp {
+  0% {
+    transform: translateY(100%);
   }
-  
-  h1 {
-    text-align: center;
+  100% {
+    transform: translateY(0);
   }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  li {
-    display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
-  }
-  
-  input[type="text"], input[type="checkbox"] {
-    margin-right: 10px;
-  }
-  
-  button {
-    background-color: #4CAF50;
-    color: white;
+}
+
+.modal-header {
+  background-color: #007bff;
+  color: white;
+  padding: 20px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header button {
+  color: white;
+  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px;
+  background-color: #f9f9f9;
+  height: calc(100% - 80px); /* 留出空间给 header */
+  overflow-y: auto; /* 如果内容过多，允许滚动 */
+}
+
+.modal-body .form-group {
+  margin-bottom: 20px;
+}
+
+.form-control {
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin-right: 10px; /* 给按钮之间增加间距 */
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); /* 提升按钮 */
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+  transform: translateY(1px); /* 点击效果 */
+}
+
+button:focus {
+  outline: none;
+}
+
+/* 在Modal的footer中增加按钮间隙 */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px;
+  background-color: #f1f1f1;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.modal-footer button {
+  margin-left: 10px; /* 调整按钮之间的间距 */
+}
+
+/* 按钮容器，确保按钮排列整齐 */
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .container {
     padding: 10px;
-    border: none;
-    cursor: pointer;
-    margin-left: 10px;
   }
-  
-  button:hover {
-    background-color: #45a049;
+
+  h2 {
+    font-size: 2rem;
   }
-  
+
+  .table th, .table td {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  button {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+}
