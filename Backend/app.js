@@ -4,6 +4,7 @@
 
 const express = require('express')
 const mysql = require('mysql')
+const cors = require('cors');
 
 const dbconnect = mysql.createPool({
   connectionLimit: 10,  
@@ -15,7 +16,10 @@ const dbconnect = mysql.createPool({
 });
 
 const app = express()
+
 app.use(express.json())
+
+app.use(cors());
 
 app.get('/api/ping', (req, res) => {
   res.status(200).json({"message":"pong!"});
@@ -58,9 +62,10 @@ app.get('/api/todos/:id', (req, res) => {
 // 新增单个todo
 app.post('/api/todos', (req, res) => {
   const { description, status ,aborted } = req.body;
-  if (!description||!status||!aborted) {
-    return res.status(400).json({ msg: "Content is required" })
-  }
+  if (description === undefined || status === undefined || aborted === undefined ||
+    !['pending', 'completed', 'in-progress'].includes(status)) {
+  return res.status(400).json({ msg: "Invalid parameters" });
+}
 
   const sql = 'INSERT INTO todos (description, status,aborted) VALUES (?, ? ,?)'
   dbconnect.query(sql, [description, status , aborted], (err, result) => {
@@ -75,9 +80,10 @@ app.post('/api/todos', (req, res) => {
 app.put('/api/todos/:id', (req, res) => {
   const { id } = req.params
   const { description, status ,aborted } = req.body;
-  if (!id || (!description && !status && aborted === undefined)) {
-    return res.status(400).json({ msg: "Invalid parameters" })
-  }
+  if (id === undefined||description === undefined || status === undefined || aborted === undefined ||
+    !['pending', 'completed', 'in-progress'].includes(status)) {
+  return res.status(400).json({ msg: "Invalid parameters" });
+}
 
   let sql = 'UPDATE todos SET description = ?, status = ?, aborted = ? WHERE id = ?'
   let args = [description, status, aborted, id]
@@ -98,9 +104,9 @@ app.put('/api/todos/:id', (req, res) => {
 // 删除单个todo
 app.delete('/api/todos/:id', (req, res) => {
   const { id } = req.params
-  if (!id) {
-    return res.status(400).json({ msg: "Invalid parameters" })
-  }
+  if (id === undefined) {
+  return res.status(400).json({ msg: "Invalid parameters" });
+}
 
   const sql = 'DELETE FROM todos WHERE id = ?'
   dbconnect.query(sql, [id], (err, result) => {
@@ -112,7 +118,7 @@ app.delete('/api/todos/:id', (req, res) => {
       return res.status(404).json({ msg: "Todo not found" })
     }
 
-    res.status(204).end()
+    res.status(204).json({ msg: "Todo deleted successfully" })
   })
 })
 
