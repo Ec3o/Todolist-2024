@@ -5,20 +5,14 @@
 const express = require('express')
 const mysql = require('mysql')
 
-const dbconnect = mysql.createConnection({
+const dbconnect = mysql.createPool({
+  connectionLimit: 10,  
   host: 'db',
   port: 3306,
-  user: "todolist",
-  password: "todolist-2024",
-  database: "todolist"
-})
-
-dbconnect.connect(err => {
-  if (err) {
-    console.error('failed to connect to database, error: ', err)
-    process.exit(1)
-  }
-})
+  user: 'todolist',
+  password: 'todolist-2024',
+  database: 'todolist'
+});
 
 const app = express()
 app.use(express.json())

@@ -17,8 +17,7 @@ services:
       MYSQL_USER: todolist             
       MYSQL_PASSWORD: todolist-2024  
       MYSQL_DATABASE: todos        
-    volumes:
-      - db_data:/var/lib/mysql          
+    volumes:      
       - ./DB/ini.sql:/docker-entrypoint-initdb.d/ini.sql
     networks:
       - todo_net
@@ -26,6 +25,3 @@ services:
 networks:
   todo_net:
     driver: bridge
-
-volumes:
-  db_data:
