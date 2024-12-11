@@ -81,7 +81,11 @@ const App = () => {
                   <td>{todo.aborted ? "Yes" : "No"}</td>
                   <td>
                     <Button onClick={() => handleSelectTodo(todo)} variant="warning" size="sm" className="mr-2">Edit</Button>
-                    <Button onClick={() => handleDeleteTodo(todo.id)} variant="danger" size="sm">Delete</Button>
+                    {(todo.aborted === 0||todo.status==="completed") && (
+                      <Button onClick={() => handleDeleteTodo(todo.id)} variant="danger" size="sm">
+                        Delete
+                      </Button>
+                    )}
                   </td>
                 </tr>
               ))}
