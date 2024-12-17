@@ -1,6 +1,6 @@
 body {
-  font-family: 'Roboto', sans-serif;
-  background: linear-gradient(45deg, #e3f2fd, #bbdefb); 
+  font-family: "Josefin Sans", sans-serif;
+  background: #e6d7c2;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -13,7 +13,7 @@ h2 {
   color: #333;
   text-align: center;
   margin-bottom: 30px;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); 
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .container {
@@ -21,16 +21,17 @@ h2 {
   margin: 0 auto;
   padding: 20px;
   border-radius: 10px;
-  background-color: #ffffff;
+  background-color: #dcc3a0;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .table-container {
-  background-color: #007bff;
+  background-color: #ffffff;
   border-radius: 10px;
   padding: 20px;
   margin-top: 30px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd; /* 添加边框，模拟卡片效果 */
 }
 
 .table {
@@ -49,8 +50,8 @@ h2 {
 }
 
 .table thead {
-  background-color: #007bff;
-  color: white;
+  background-color: #ffefd5;
+  color: rgb(111, 104, 104);
 }
 
 .table tbody tr:nth-child(odd) {
@@ -63,8 +64,8 @@ h2 {
 }
 
 button {
-  background-color: #007bff;
-  color: white;
+  background-color: #d9d99b;
+  color: rgb(111, 104, 104);
   border: none;
   padding: 12px 25px;
   border-radius: 5px;
@@ -75,23 +76,25 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px); 
+  background-color: #d9d99b;
+  transform: translateY(-2px);
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 button:active {
-  transform: translateY(1px); 
+  transform: translateY(1px);
 }
 
 button:focus {
   outline: none;
 }
+
 .button {
   outline: none;
 }
-.btn-close{
-  color: white;
+
+.btn-close {
+  color: rgb(111, 104, 104);
   background-color: rgb(255, 9, 9)!important;
 }
 
@@ -103,7 +106,7 @@ button:focus {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 50%; 
+  height: 50%;
   background-color: #fff;
   animation: slideUp 0.5s ease-in-out;
 }
@@ -118,7 +121,7 @@ button:focus {
 }
 
 .modal-header {
-  background-color: #007bff;
+  background-color: #d9d99b;
   color: white;
   padding: 20px;
   border-top-left-radius: 15px;
@@ -162,8 +165,8 @@ button:focus {
 }
 
 button {
-  background-color: #007bff;
-  color: white;
+  background-color: #d9d99b;
+  color: rgb(111, 104, 104);
   border: none;
   padding: 12px 20px;
   border-radius: 5px;
@@ -171,11 +174,13 @@ button {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  margin-right: 10px; /* 给按钮之间增加间距 */
+  margin-top: 10px; /* 给按钮之间增加间距 */
+  margin-right: 5px;
 }
 
 button:hover {
   background-color: #0056b3;
+  color: white;
   transform: translateY(-2px); /* 提升按钮 */
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 }
@@ -208,6 +213,24 @@ button:focus {
   justify-content: flex-end;
 }
 
+/* 左右布局的容器 */
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.col-md-6 {
+  flex: 0 0 48%;  /* 每列占 48% 宽度 */
+}
+
+/* 将Add New Todo按钮移到下面 */
+.add-todo-button {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .container {
@@ -221,6 +244,15 @@ button:focus {
   .table th, .table td {
     font-size: 0.9rem;
     padding: 10px;
+  }
+
+  .row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .col-md-6 {
+    flex: 0 0 100%; /* 在小屏幕下，占满整个宽度 */
   }
 
   button {

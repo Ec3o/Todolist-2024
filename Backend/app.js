@@ -78,28 +78,58 @@ app.post('/api/todos', (req, res) => {
 
 // 更新单个todo
 app.put('/api/todos/:id', (req, res) => {
-  const { id } = req.params
-  const { description, status ,aborted } = req.body;
-  if (id === undefined||description === undefined || status === undefined || aborted === undefined ||
-    !['pending', 'completed', 'in-progress'].includes(status)) {
-  return res.status(400).json({ msg: "Invalid parameters" });
-}
+  const { id } = req.params;
+  const { description, status, aborted } = req.body;
 
-  let sql = 'UPDATE todos SET description = ?, status = ?, aborted = ? WHERE id = ?'
-  let args = [description, status, aborted, id]
+  // 检查 id 是否有效
+  if (!id) {
+    return res.status(400).json({ msg: "Invalid ID" });
+  }
 
+  // 准备更新的 SQL 语句和参数
+  let sql = 'UPDATE todos SET ';
+  let args = [];
+
+  // 动态构建更新的 SQL 语句
+  if (description !== undefined) {
+    sql += 'description = ?, ';
+    args.push(description);
+  }
+
+  if (status !== undefined && ['pending', 'completed', 'in-progress'].includes(status)) {
+    sql += 'status = ?, ';
+    args.push(status);
+  }
+
+  if (aborted !== undefined) {
+    sql += 'aborted = ?, ';
+    args.push(aborted);
+  }
+
+  // 如果没有任何参数需要更新，返回错误
+  if (args.length === 0) {
+    return res.status(400).json({ msg: "No valid parameters provided for update" });
+  }
+
+  // 移除最后一个多余的逗号和空格
+  sql = sql.slice(0, -2);
+  sql += ' WHERE id = ?';
+  args.push(id);
+
+  // 执行 SQL 查询
   dbconnect.query(sql, args, (err, result) => {
     if (err) {
-      return res.status(500).json({ msg: err.message })
+      return res.status(500).json({ msg: err.message });
     }
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ msg: "Todo not found" })
+      return res.status(404).json({ msg: "Todo not found" });
     }
 
-    res.status(200).json({ msg: "Todo updated successfully" })
-  })
-})
+    res.status(200).json({ msg: "Todo updated successfully" });
+  });
+});
+
 
 // 删除单个todo
 app.delete('/api/todos/:id', (req, res) => {
